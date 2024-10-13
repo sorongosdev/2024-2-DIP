@@ -68,8 +68,8 @@ def process_image():
     # 밝기 조정
     dst_user = shift_brightness(dst_user, shift_value)  # 평활화된 이미지에 밝기 조정 적용
 
-    # 각 히스토그램 계산
-    hist_user = cv2.calcHist(equalized_channels_user, [0], None, bins, ranges)  # 사용자 정의 방법
+    # 각 히스토그램 계산 (밝기 조정 후 이미지에 대해 계산)
+    hist_user = cv2.calcHist([dst_user], [0], None, bins, ranges)  # 사용자 정의 방법
 
     # 히스토그램 이미지 생성
     hist_img_original = draw_histo(hist_original)  # 원본 이미지 히스토그램
