@@ -36,37 +36,31 @@ def update(val):
 
 
 def process_image():
-    # 각 채널에 대해 사용자 정의 히스토그램 평활화
-    channels = cv2.split(image)  # B, G, R 채널 분리
-    equalized_channels_user = []
+    # 그레이스케일 변환
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # 원본 이미지 히스토그램 계산
     bins, ranges = [256], [0, 256]
-    hist_original = cv2.calcHist([image], [0], None, bins, ranges)
+    hist_original = cv2.calcHist([gray_image], [0], None, bins, ranges)
 
-    for channel in channels:
-        # 사용자 정의 누적 히스토그램 계산
-        hist = cv2.calcHist([channel], [0], None, bins, ranges)
+    # 사용자 정의 누적 히스토그램 계산
+    hist = cv2.calcHist([gray_image], [0], None, bins, ranges)
 
-        # 누적 히스토그램 계산
-        accum_hist = np.zeros(hist.shape[:2], np.float32)
-        accum_hist[0] = hist[0]
+    # 누적 히스토그램 계산
+    accum_hist = np.zeros(hist.shape[:2], np.float32)
+    accum_hist[0] = hist[0]
 
-        for i in range(1, hist.shape[0]):
-            accum_hist[i] = accum_hist[i - 1] + hist[i]
+    for i in range(1, hist.shape[0]):
+        accum_hist[i] = accum_hist[i - 1] + hist[i]
 
-        # 누적 히스토그램 정규화
-        accum_hist = (accum_hist / np.sum(hist)) * norm_const  # 정규화 범위 조정
+    # 누적 히스토그램 정규화
+    accum_hist = (accum_hist / np.sum(hist)) * norm_const  # 정규화 범위 조정
 
-        # LUT를 이용한 사용자 정의 이미지 변환
-        equalized_channel_user = cv2.LUT(channel, accum_hist.astype("uint8"))
-        equalized_channels_user.append(equalized_channel_user)  # 평활화된 채널 저장
-
-    # 평활화된 채널을 다시 합치기
-    dst_user = cv2.merge(equalized_channels_user)
+    # LUT를 이용한 사용자 정의 이미지 변환
+    equalized_image = cv2.LUT(gray_image, accum_hist.astype("uint8"))
 
     # 밝기 조정
-    dst_user = shift_brightness(dst_user, shift_value)  # 평활화된 이미지에 밝기 조정 적용
+    dst_user = shift_brightness(equalized_image, shift_value)  # 평활화된 이미지에 밝기 조정 적용
 
     # 각 히스토그램 계산 (밝기 조정 후 이미지에 대해 계산)
     hist_user = cv2.calcHist([dst_user], [0], None, bins, ranges)  # 사용자 정의 방법
@@ -76,10 +70,10 @@ def process_image():
     hist_img_user = draw_histo(hist_user)  # 사용자 정의 평활화 히스토그램
 
     # 결과 출력
-    cv2.imshow("Original Image", image)
-    cv2.imshow("Original Histogram", hist_img_original)
-    cv2.imshow("User Defined Equalized Image", dst_user)
-    cv2.imshow("User Defined Histogram", hist_img_user)
+    cv2.imshow("Original Image (Grayscale)", gray_image)  # 원본 이미지를 그레이스케일로 표시
+    cv2.imshow("Original Histogram", hist_img_original)  # 원본 이미지 히스토그램
+    cv2.imshow("User Defined Equalized Image", dst_user)  # 평활화된 이미지
+    cv2.imshow("User Defined Histogram", hist_img_user)  # 사용자 정의 히스토그램
 
 
 # 이미지 읽기
