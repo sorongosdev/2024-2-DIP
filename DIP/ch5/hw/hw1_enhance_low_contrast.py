@@ -2,8 +2,7 @@ import numpy as np
 import cv2
 
 # 초기값 설정
-norm_const = 0  # 정규화 범위
-shift_value = 0  # 조정 밝기
+norm_const = 255  # 정규화 범위
 
 
 def draw_histo(hist, shape=(200, 255)):
@@ -19,19 +18,9 @@ def draw_histo(hist, shape=(200, 255)):
     return cv2.flip(hist_img, 0)  # 세로 방향으로 뒤집기
 
 
-def shift_brightness(image, shift_value):
-    # 픽셀 값에 shift_value를 더함
-    shifted_image = cv2.add(image, (shift_value, shift_value, shift_value, 0))
-    return shifted_image
-
-
 def update(val):
-    # 트랙바에서 변경된 값에 따라 이미지를 업데이트
-    global norm_const, shift_value
+    global norm_const
     norm_const = cv2.getTrackbarPos('Norm Const', 'Result')
-    shift_value = cv2.getTrackbarPos('Shift Value', 'Result')
-
-    # 이미지와 히스토그램 업데이트
     process_image()
 
 
@@ -59,20 +48,17 @@ def process_image():
     # LUT를 이용한 사용자 정의 이미지 변환
     equalized_image = cv2.LUT(gray_image, accum_hist.astype("uint8"))
 
-    # 밝기 조정
-    dst_user = shift_brightness(equalized_image, shift_value)  # 평활화된 이미지에 밝기 조정 적용
-
-    # 각 히스토그램 계산 (밝기 조정 후 이미지에 대해 계산)
-    hist_user = cv2.calcHist([dst_user], [0], None, bins, ranges)  # 사용자 정의 방법
+    # 각 히스토그램 계산 (평활화된 이미지에 대해)
+    hist_user = cv2.calcHist([equalized_image], [0], None, bins, ranges)  # 사용자 정의 방법
 
     # 히스토그램 이미지 생성
     hist_img_original = draw_histo(hist_original)  # 원본 이미지 히스토그램
-    hist_img_user = draw_histo(hist_user)  # 사용자 정의 평활화 히스토그램
+    hist_img_user = draw_histo(hist_user)  # 사용자 정의 히스토그램
 
     # 결과 출력
     cv2.imshow("Original Image (Grayscale)", gray_image)  # 원본 이미지를 그레이스케일로 표시
     cv2.imshow("Original Histogram", hist_img_original)  # 원본 이미지 히스토그램
-    cv2.imshow("User Defined Equalized Image", dst_user)  # 평활화된 이미지
+    cv2.imshow("User Defined Equalized Image", equalized_image)  # 평활화된 이미지
     cv2.imshow("User Defined Histogram", hist_img_user)  # 사용자 정의 히스토그램
 
 
@@ -83,7 +69,6 @@ if image is None: raise Exception('No image')
 # 트랙바 생성
 cv2.namedWindow('Result')
 cv2.createTrackbar('Norm Const', 'Result', 0, 255, update)  # norm_const 조정
-cv2.createTrackbar('Shift Value', 'Result', 0, 255, update)  # shift_value 조정
 
 # 초기 이미지 처리
 process_image()
