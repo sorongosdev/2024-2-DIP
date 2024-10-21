@@ -3,6 +3,8 @@ import cv2
 
 low_th = 50
 high_th = low_th * 2
+sobel_ksize = 3
+gaus_ksize = 5
 
 
 def nonmax_suppression(sobel, direct):
@@ -18,12 +20,13 @@ def nonmax_suppression(sobel, direct):
     return dst
 
 
+# pos_ck 대신 canny 이미지에 엣지 강도를 저장
 def trace(max_sobel, i, j, low, pos_ck, canny):
     h, w = max_sobel.shape
     if (0 <= i < h and 0 <= j < w) == False: return
     if pos_ck[i, j] == 0 and max_sobel[i, j] > low:
         pos_ck[i, j] = 255
-        canny[i, j] = 255
+        canny[i, j] = max_sobel[i, j]  # 엣지 강도를 저장
         trace(max_sobel, i - 1, j - 1, low, pos_ck, canny)
         trace(max_sobel, i, j - 1, low, pos_ck, canny)
         trace(max_sobel, i + 1, j - 1, low, pos_ck, canny)
@@ -34,6 +37,7 @@ def trace(max_sobel, i, j, low, pos_ck, canny):
         trace(max_sobel, i + 1, j + 1, low, pos_ck, canny)
 
 
+# hysteresis_th에서 max_sobel 강도를 유지
 def hysteresis_th(max_sobel, low, high, pos_ck, canny):
     rows, cols = max_sobel.shape[:2]
     for i in range(1, rows - 1):
@@ -55,9 +59,9 @@ for i, channel_name in enumerate(channel_names):  # B, G, R 채널
     channel = image[:, :, i]
 
     # 가우시안 블러
-    gaus_img = cv2.GaussianBlur(channel, (5, 5), 0.3)
-    Gx = cv2.Sobel(np.float32(gaus_img), cv2.CV_32F, 1, 0, 3)
-    Gy = cv2.Sobel(np.float32(gaus_img), cv2.CV_32F, 0, 1, 3)
+    gaus_img = cv2.GaussianBlur(channel, (gaus_ksize, gaus_ksize), 0.3)
+    Gx = cv2.Sobel(np.float32(gaus_img), cv2.CV_32F, 1, 0, sobel_ksize)
+    Gy = cv2.Sobel(np.float32(gaus_img), cv2.CV_32F, 0, 1, sobel_ksize)
 
     sobel = np.fabs(Gx) + np.fabs(Gy)
     directs = cv2.phase(Gx, Gy) / (np.pi / 4)
@@ -69,13 +73,13 @@ for i, channel_name in enumerate(channel_names):  # B, G, R 채널
 
     hysteresis_th(max_sobel, low_th, high_th, pos_ck, canny)
 
-    # 각 채널에 색상 추가
+    # 각 채널에 색상 추가 (엣지 강도를 색상 강도로 사용)
     if channel_name == 'red':
-        canny_colored = cv2.merge([np.zeros_like(canny), np.zeros_like(canny), canny])
+        canny_colored = cv2.merge([np.zeros_like(canny), np.zeros_like(canny), canny.astype(np.uint8)])
     elif channel_name == 'green':
-        canny_colored = cv2.merge([np.zeros_like(canny), canny, np.zeros_like(canny)])
+        canny_colored = cv2.merge([np.zeros_like(canny), canny.astype(np.uint8), np.zeros_like(canny)])
     elif channel_name == 'blue':
-        canny_colored = cv2.merge([canny, np.zeros_like(canny), np.zeros_like(canny)])
+        canny_colored = cv2.merge([canny.astype(np.uint8), np.zeros_like(canny), np.zeros_like(canny)])
 
     channels_canny.append(canny_colored)
 
