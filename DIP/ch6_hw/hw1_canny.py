@@ -1,10 +1,11 @@
 import numpy as np
 import cv2
 
-low_th = 50
+low_th = 30
 high_th = low_th * 2
 sobel_ksize = 3
-gaus_ksize = 5
+gaus_ksize = 7
+sigmaX = 0.5
 
 
 def nonmax_suppression(sobel, direct):
@@ -59,7 +60,7 @@ for i, channel_name in enumerate(channel_names):  # B, G, R 채널
     channel = image[:, :, i]
 
     # 가우시안 블러
-    gaus_img = cv2.GaussianBlur(channel, (gaus_ksize, gaus_ksize), 0.3)
+    gaus_img = cv2.GaussianBlur(channel, (gaus_ksize, gaus_ksize), sigmaX)
     Gx = cv2.Sobel(np.float32(gaus_img), cv2.CV_32F, 1, 0, sobel_ksize)
     Gy = cv2.Sobel(np.float32(gaus_img), cv2.CV_32F, 0, 1, sobel_ksize)
 
