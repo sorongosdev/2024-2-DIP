@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 
-low_th = 100
+low_th = 50
 high_th = low_th * 2
 
 
@@ -69,15 +69,26 @@ for i, channel_name in enumerate(channel_names):  # B, G, R 채널
 
     hysteresis_th(max_sobel, low_th, high_th, pos_ck, canny)
 
-    channels_canny.append(canny)
+    # 각 채널에 색상 추가
+    if channel_name == 'red':
+        canny_colored = cv2.merge([np.zeros_like(canny), np.zeros_like(canny), canny])
+    elif channel_name == 'green':
+        canny_colored = cv2.merge([np.zeros_like(canny), canny, np.zeros_like(canny)])
+    elif channel_name == 'blue':
+        canny_colored = cv2.merge([canny, np.zeros_like(canny), np.zeros_like(canny)])
+
+    channels_canny.append(canny_colored)
+
+# 세 개의 채널 결과 합치기
+merged_canny = np.zeros_like(image)
+for canny_result in channels_canny:
+    merged_canny = cv2.addWeighted(merged_canny, 1.0, canny_result, 0.5, 0)
 
 # 채널별 결과 출력
 cv2.imshow("Original Image", image)
 for idx, (canny_result, channel_name) in enumerate(zip(channels_canny, channel_names)):
     cv2.imshow(f"Canny Edge - {channel_name.capitalize()}", canny_result)
 
-# 세 개의 채널 결과 합치기
-merged_canny = cv2.merge(channels_canny)
 cv2.imshow("Merged Canny Edges", merged_canny)
 
 cv2.waitKey(0)
