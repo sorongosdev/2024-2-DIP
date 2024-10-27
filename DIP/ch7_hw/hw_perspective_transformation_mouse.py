@@ -1,14 +1,26 @@
 import numpy as np
 import cv2
 
+# 클릭한 좌표를 저장할 리스트
+clicked_points = []
+
 
 # 마우스 클릭 이벤트를 처리할 콜백 함수
 def click_event(event, x, y, flags, param):
     if event == cv2.EVENT_LBUTTONDOWN:  # 왼쪽 버튼 클릭
-        print(f"Clicked coordinates: ({x}, {y})")
-        # 클릭한 위치에 원 그리기
-        cv2.circle(image, (x, y), 5, (255, 0, 0), -1)
-        cv2.imshow("Original image", image)
+        if len(clicked_points) < 4:  # 4번 클릭까지 허용
+            clicked_points.append((x, y))
+            print(f"Clicked coordinates: ({x}, {y})")
+            # 클릭한 위치에 원 그리기
+            cv2.circle(image, (x, y), 5, (255, 0, 0), -1)
+            cv2.imshow("Original image", image)
+
+            # 4번 클릭 후 좌표 출력
+            if len(clicked_points) == 4:
+                print("Four points clicked:", clicked_points)
+                # np.float32 배열로 변환
+                points_array = np.array(clicked_points, dtype=np.float32)
+                print("Points as np.float32 array:", points_array)
 
 
 # 이미지 로드
