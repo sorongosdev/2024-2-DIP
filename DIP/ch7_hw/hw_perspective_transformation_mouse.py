@@ -45,10 +45,9 @@ def process_perspective_transform():
     cv2.imshow("Warped Image", dst)
 
 
-""" 마우스 콜백 함수"""
-
-
 def click_event(event, x, y, flags, param):
+    """ 마우스 콜백 함수"""
+
     global pts1  # pts1을 전역 변수로 사용
     if event == cv2.EVENT_LBUTTONDOWN:  # 왼쪽 버튼 클릭
         if len(pts1) < 4:  # 4번 클릭까지 허용
