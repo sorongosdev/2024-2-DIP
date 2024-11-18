@@ -1,17 +1,23 @@
 import cv2
 
-# 이미지 불러오기
-image = cv2.imread('images/opencv.png')
+# 이미지 읽기
+img = cv2.imread("images/opencv.png", cv2.IMREAD_COLOR)
 
-# 이미지가 제대로 불러와졌는지 확인
-if image is None:
-    print("이미지를 불러오는 데 실패했습니다.")
-else:
-    # 이미지 윈도우에 띄우기
-    cv2.imshow('Loaded Image', image)
+# BGR을 HSV로 변환
+converted = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
-    # 키 입력 대기 (무한 대기)
-    cv2.waitKey(0)
+# 녹색 범위 마스크 생성
+greenScreen = cv2.inRange(converted, (60 - 10, 100, 100), (60 + 10, 255, 255))
 
-    # 모든 윈도우 종료
-    cv2.destroyAllWindows()
+# greenScreen을 원본 이미지와 비트 OR 연산
+# 마스크를 3채널로 변환하여 원본 이미지와의 비트 OR 연산을 수행
+greenScreen_colored = cv2.merge((greenScreen, greenScreen, greenScreen))
+result_with_green = cv2.bitwise_or(img, greenScreen_colored)
+
+# 결과 이미지 표시
+cv2.imshow("Original Image", img)
+cv2.imshow("Green Screen Mask", greenScreen)
+cv2.imshow("Result with Green Screen OR", result_with_green)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
