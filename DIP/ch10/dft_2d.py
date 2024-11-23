@@ -13,11 +13,11 @@ def calc_spectrum(complex):
 
 def fftshift(img):
     dst = np.zeros(img.shape, img.dtype)
-    h, w = dst.shpe[:2]
+    h, w = dst.shape[:2]
     cy, cx = h // 2, w // 2
     dst[h - cy:, w - cx:] = np.copy(img[0:cy, 0:cx])
     dst[0:cy, 0:cx] = np.copy(img[h - cy:, w - cx:])
-    dst[0:cy, w - cx] = np.copy(img[h - cy:, 0:cx])
+    dst[0:cy, w - cx:] = np.copy(img[h - cy:, 0:cx])
     dst[h - cy:, 0:cx] = np.copy(img[0:cy, w - cx:])
     return dst
 
@@ -34,7 +34,7 @@ def idft2(image):
     return np.transpose(dst)
 
 
-def ck_time(mode = 0):
+def ck_time(mode=0):
     global stime
     if (mode == 0):
         stime = time.perf_counter()
@@ -43,7 +43,7 @@ def ck_time(mode = 0):
         print("수행시간 = %.5f sec" % (etime - stime))
 
 
-image = cv2.read('images/dft_240.jpg', cv2.IMREAD_GRAYSCALE)
+image = cv2.imread('images/dft_240.jpg', cv2.IMREAD_GRAYSCALE)
 if image is None: raise Exception('Read image failed')
 
 ck_time(0)

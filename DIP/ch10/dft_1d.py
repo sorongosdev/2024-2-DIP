@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -21,12 +23,12 @@ def idft(G):
 
 fmax = 1000
 dt = 1 / fmax
-t = np.arrange(0, 1, dt)
+t = np.arange(0, 1, dt)
 
 g1 = np.sin(2 * np.pi * 50 * t)
 g2 = np.sin(2 * np.pi * 120 * t)
 g3 = np.sin(2 * np.pi * 260 * t)
 g1 = g1 * 0.6 + g2 * 0.9 + g3 * 0.2
 
-N = len(g)
+N = len(g1)
 df = fmax
