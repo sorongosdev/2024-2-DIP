@@ -1,6 +1,6 @@
 import numpy as np, cv2
-from fft_2d import fft2, ifft2
-from dft_2d import calc_spectrum, fftshift
+from ch10.fft_2d import fft2, ifft2
+from ch10.dft_2d import calc_spectrum, fftshift
 
 
 def FFT(image, mode=2):

@@ -42,8 +42,7 @@ def ck_time(mode=0):
         etime = time.perf_counter()
         print("수행시간 = %.5f sec" % (etime - stime))
 
-
-image = cv2.imread('images/dft_240.jpg', cv2.IMREAD_GRAYSCALE)
-if image is None: raise Exception('Read image failed')
-
-ck_time(0)
+# image = cv2.imread('images/dft_240.jpg', cv2.IMREAD_GRAYSCALE)
+# if image is None: raise Exception('Read image failed')
+#
+# ck_time(0)
