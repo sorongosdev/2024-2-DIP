@@ -23,17 +23,26 @@ channels = 1
 
 file_path = 'images/peppers_mixed.raw'
 
-image_data = np.fromfile(file_path, dtype=np.uint8)
+# RAW 이미지 파일을 numpy 배열로 로드합니다
+image_data = np.fromfile(file_path, dtype = np.uint8)
 print(image_data.shape)
 
+# 이미지를 높이, 너비 및 채널에 맞게 리쉐이프합니다
 image = image_data.reshape((height, width, channels))
 
 if image is None:
     raise Exception("영상파일 읽기 오류")
 
+# 1. Median Filter를 적용하여 소금과 후추 노이즈를 제거합니다
 med_img1 = median_filter(image, 3)
 
-cv2.imshow("image", image)
-cv2.imshow("med_img1", med_img1)
+# 2. Bilateral Filter를 적용하여 엣지를 보존하면서 부드러운 이미지를 얻습니다
+# d는 필터 지름, sigmaColor는 색상 표준편차, sigmaSpace는 공간 표준편차입니다
+bilateral_img = cv2.bilateralFilter(med_img1, d = 5, sigmaColor = 30, sigmaSpace = 30)
+
+# 결과 이미지 표시
+cv2.imshow("Original Image", image)
+cv2.imshow("Median Filtered Image", med_img1)
+cv2.imshow("Bilateral Filtered Image", bilateral_img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
