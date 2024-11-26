@@ -12,7 +12,12 @@ print(image_data.shape)
 image = image_data.reshape((height, width, channels))
 if image is None: raise Exception("영상파일 읽기 오류")
 
-cv2.imshow("image", image)
-cv2.waitKey(0)
+gray_image = 0.21 * image[:, :, 2] + 0.72 * image[:, :, 1] + 0.07 * image[:, :, 0]
+gray_image = gray_image.astype(np.uint8)
 
-## 바이트 설정?? 찾아볼것.
+cv2.imwrite('images/desk_grayscale.jpg', gray_image)
+
+cv2.imshow("Original Image", image)
+cv2.imshow("Grayscale Image", gray_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
