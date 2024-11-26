@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import matplotlib.pyplot as plt
 
 
 def average_filter(image, ksize):
@@ -36,34 +37,66 @@ def getGaussianMask(ksize, sigmaX, sigmaY):
     return mask / np.sum(mask)
 
 
+def FFT(image, mode):
+    dft = cv2.dft(np.float32(image), flags=cv2.DFT_COMPLEX_OUTPUT)
+    dft_shift = np.fft.fftshift(dft)
+    magnitude = cv2.magnitude(dft_shift[:, :, 0], dft_shift[:, :, 1])
+    magnitude = np.log(magnitude + 1)  # 로그 스케일로 변환하여 시각화
+    return dft_shift, magnitude
+
+
+file_path = 'images/peppers_mixed.raw'
 width = 512
 height = 512
-channels = 1
-file_path = 'images/peppers_mixed.raw'
-
 image_data = np.fromfile(file_path, dtype=np.uint8)
-print(image_data.shape)
+image = image_data.reshape((height, width))
 
-image = image_data.reshape((height, width, channels))
-
-if image is None:
-    raise Exception("영상파일 읽기 오류")
-# 평균 필터 적용 (3x3 및 5x5)
 avg_img_3x3 = average_filter(image, 3)
 avg_img_5x5 = average_filter(image, 5)
-
-# 가우시안 필터 적용 (3x3 및 5x5)
 gaussian_mask_3x3 = getGaussianMask((3, 3), 0, 0)
 gaussian_mask_5x5 = getGaussianMask((5, 5), 0, 0)
 gauss_img_3x3 = cv2.filter2D(image, -1, gaussian_mask_3x3)
 gauss_img_5x5 = cv2.filter2D(image, -1, gaussian_mask_5x5)
-
-# 결과 표시
 titles = ['Original Image', 'Avg Filter 3x3', 'Avg Filter 5x5', 'Gaussian Filter 3x3', 'Gaussian Filter 5x5']
 images = [image, avg_img_3x3, avg_img_5x5, gauss_img_3x3, gauss_img_5x5]
 
 for title, img in zip(titles, images):
     cv2.imshow(title, img)
 
+_, spectrum_original = FFT(image, mode=3)
+_, spectrum_avg_3x3 = FFT(avg_img_3x3, mode=3)
+_, spectrum_avg_5x5 = FFT(avg_img_5x5, mode=3)
+_, spectrum_gauss_3x3 = FFT(gauss_img_3x3, mode=3)
+_, spectrum_gauss_5x5 = FFT(gauss_img_5x5, mode=3)
+
+plt.figure(figsize=(12, 10))
+
+plt.subplot(3, 2, 1)
+plt.title('Original Image Spectrum')
+plt.imshow(spectrum_original, cmap='gray')
+plt.axis('off')
+
+plt.subplot(3, 2, 2)
+plt.title('Average Filter 3x3 Spectrum')
+plt.imshow(spectrum_avg_3x3, cmap='gray')
+plt.axis('off')
+
+plt.subplot(3, 2, 3)
+plt.title('Average Filter 5x5 Spectrum')
+plt.imshow(spectrum_avg_5x5, cmap='gray')
+plt.axis('off')
+
+plt.subplot(3, 2, 4)
+plt.title('Gaussian Filter 3x3 Spectrum')
+plt.imshow(spectrum_gauss_3x3, cmap='gray')
+plt.axis('off')
+
+plt.subplot(3, 2, 5)
+plt.title('Gaussian Filter 5x5 Spectrum')
+plt.imshow(spectrum_gauss_5x5, cmap='gray')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
 cv2.waitKey(0)
 cv2.destroyAllWindows()
