@@ -24,7 +24,7 @@ channels = 1
 file_path = 'images/peppers_mixed.raw'
 
 # RAW 이미지 파일을 numpy 배열로 로드합니다
-image_data = np.fromfile(file_path, dtype = np.uint8)
+image_data = np.fromfile(file_path, dtype=np.uint8)
 print(image_data.shape)
 
 # 이미지를 높이, 너비 및 채널에 맞게 리쉐이프합니다
@@ -35,10 +35,7 @@ if image is None:
 
 med_img1 = median_filter(image, 3)
 
-bilateral_img = cv2.bilateralFilter(med_img1, d = 5, sigmaColor = 30, sigmaSpace = 30)
-
 cv2.imshow("Original Image", image)
 cv2.imshow("Median Filtered Image", med_img1)
-cv2.imshow("Bilateral Filtered Image", bilateral_img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
