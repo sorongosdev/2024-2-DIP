@@ -92,23 +92,15 @@ dst1_sobel_h = cv2.Sobel(np.float32(image1), cv2.CV_32F, 0, 1, 3)
 dst1_sobel_v = cv2.convertScaleAbs(dst1_sobel_v)
 dst1_sobel_h = cv2.convertScaleAbs(dst1_sobel_h)
 
-# Normalize and apply threshold separately
 dst1_v_norm = normalize(dst1_v)
 dst1_h_norm = normalize(dst1_h)
-dst1_norm_combined = cv2.add(dst1_v_norm, dst1_h_norm)
-dst1_v_thresh = apply_threshold(dst1_v_norm, threshold)
-dst1_h_thresh = apply_threshold(dst1_h_norm, threshold)
-dst1_combined = cv2.add(dst1_v_thresh, dst1_h_thresh)
 
-# Apply edge thinning
 thinned_edges1 = edge_thinning(dst1, dst1_sobel_v, dst1_sobel_h)
 
-# cv2.imshow("dst1: sobel edge", dst1)
-# cv2.imshow("dst1_v: normalized", dst1_v_norm)
-# cv2.imshow("dst1_h: normalized", dst1_h_norm)
-cv2.imshow("dst1: Combined normalized", dst1_norm_combined)
-# cv2.imshow("dst1: Combined", dst1_combined)
+thinned_edges1_thresh = apply_threshold(thinned_edges1, threshold)
+
 cv2.imshow("dst1: Thinned Edges", thinned_edges1)
+cv2.imshow("dst1: Thinned Edges Thresh", thinned_edges1_thresh)
 
 # Process elaine.raw
 dst2, dst2_v, dst2_h = differential(image2, data1, data2)
@@ -117,23 +109,15 @@ dst2_sobel_h = cv2.Sobel(np.float32(image2), cv2.CV_32F, 0, 1, 3)
 dst2_sobel_v = cv2.convertScaleAbs(dst2_sobel_v)
 dst2_sobel_h = cv2.convertScaleAbs(dst2_sobel_h)
 
-# Normalize and apply threshold separately
 dst2_v_norm = normalize(dst2_v)
 dst2_h_norm = normalize(dst2_h)
-dst2_norm_combined = cv2.add(dst2_v_norm, dst2_h_norm)
-dst2_v_thresh = apply_threshold(dst2_v_norm, threshold)
-dst2_h_thresh = apply_threshold(dst2_h_norm, threshold)
-dst2_combined = cv2.add(dst2_v_thresh, dst2_h_thresh)
 
-# Apply edge thinning
 thinned_edges2 = edge_thinning(dst2, dst2_sobel_v, dst2_sobel_h)
-#
-# cv2.imshow("dst2: sobel edge", dst2)
-# cv2.imshow("dst2_v: normalized", dst2_v_norm)
-# cv2.imshow("dst2_h: normalized", dst2_h_norm)
-cv2.imshow("dst2: Combined normalized", dst2_norm_combined)
-# cv2.imshow("dst2: Combined", dst2_combined)
+
+thinned_edges2_thresh = apply_threshold(thinned_edges2, threshold)
+
 cv2.imshow("dst2: Thinned Edges", thinned_edges2)
+cv2.imshow("dst2: Thinned Edges Thresh", thinned_edges2_thresh)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
