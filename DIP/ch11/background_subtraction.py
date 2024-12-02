@@ -20,3 +20,10 @@ while True:
 
     cv2.imshow("Oringinal Frame", frame)
     cv2.imshow("Foreground Mask - MOG2", fgmask_mog2)
+    cv2.imshow("Foreground Mask - KNN", fgmask_knn)
+
+    if cv2.waitKey(30) == 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
