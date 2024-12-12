@@ -3,7 +3,7 @@ import numpy as np
 
 image = cv2.imread('images/Lenna.jpg')
 
-# 감마 값
+# 인코딩 감마
 # 1보다 크면 이미지가 뿌옇고, 대비가 낮아짐
 # 작으면 이미지가 뚜렷하고, 대비가 높아짐
 
@@ -13,7 +13,7 @@ gamma_high = 1.5
 
 # 감마 보정 함수
 def gamma_correction(image, gamma):
-    lut = np.array([((i / 255.0) ** gamma) * 255 for i in range(256)], dtype=np.uint8)
+    lut = np.array([((i / 255.0) ** gamma) * 255 for i in range(256)], dtype = np.uint8)
     return cv2.LUT(image, lut)
 
 
