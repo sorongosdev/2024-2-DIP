@@ -1,2 +1,127 @@
-# opencv_class
- 2024-2 opencv class
+## 개요
+- AI의 전처리 단계에서, 이미지를 변형하거나, 저화질의 이미지를 개선시키고, 노이즈를 제거하는 방법을 공부하는 **영상처리입문** 수업을 들으며 잔디 농사를 지어 보았습니다!
+## 목차
+- 4.Point Processing
+    - Access to image pixel
+    - Pixel brightness processing
+        - Grayscale image
+        - Image pixel representation
+        - Addition/subtraction of image brightness
+        - Binarization
+        - Image synthesis using matrix addition and multiplication
+        - Image contrast
+- 5.Histogram Processing
+    - Histogram Calculation
+    - Histogram Analysis
+    - Histogram stretching
+    - Histogram equalization
+    - Image Separation using Histogram
+        - Enhanced binarization method
+- 6.Spatial Filtering
+    - Spatial Filtering
+        - Concept of spatial domain and convolution
+        - blurring
+        - sharpening
+    
+    - Edge Detection
+        - 1st derivative mask
+            - Roberts mask
+            - Prewitt mask
+            - Sobel Mask
+        - 2nd deriative mask
+            - Laplacian Mask
+            - LoG(Laplacian of Gaussian)
+            - DoG(Difference of Gaussian)
+        - Canny edge detector
+    
+    - Other FIltering Methods
+        - Linear Filtering
+            - gaussian smoothing filtering
+            - average filtering
+        - Nonlinear Filtering
+            - min/max filtering
+            - median filtering
+- 7.Geometric Transformation
+    - Geometric Transformation
+    - Mapping
+    - Resizing
+    - Interpolation
+    - Rigid Transformation
+        - translation
+        - rotation
+    - Similarity transformation
+    - Affine transformation
+    - Perspective projective transformation
+- 8.Mathematical Morphology
+    - Morphology
+        - Erosion
+        - Dialation
+        - Closing
+        - Opening
+    - Morphological Gradient
+    - Skeletonization
+    - Hit-or-Miss Transformation
+- 9.Color Image Processing
+    - Color
+    - Color Space
+        - RGB
+        - CMY(K)
+        - HSV(I)
+        - Other Color Space
+            - YUV
+            - CIE XYZ
+    - Applications
+        - Color Space Conversion
+        - Segmentation by Color
+        - Chromakey
+- 10.Frequency Domain Processing
+    - Spatial Frequency
+    - Discrete Fourier Transform (DFT)
+    - Fast Fourier Transform (FFT)
+    - Frequency Domain Filtering Using FFT
+        - Frequency Domain Filtering Process
+        - Low-Pass and High-Pass Filtering
+        - Butterworth / Gaussian Filtering
+    - Discrete Cosine Transform (DCT)
+- 11.Image Segmentation
+    - Image Segmentation
+    - Binarization
+        - Thresholding
+        - Otsu's method
+        - Chow and Kaneko method
+        - Adaptive Thresholding
+    - Background Subtraction
+    - Connected Component Labeling
+    - K-means Clustering
+- 12.Feature Extraction
+    - Image Recognition
+    - Feature Extraction
+    - Hough Transform
+        - Concept of Hough Transform
+        - Process of Hough Transform
+        - Circular Hough Transform
+    - Corner Detection
+        - Moravec Corner Detection
+        - Harris Corner Detection
+- 13.Image Classification
+    - Image Classification
+    - Image Demension
+        - Curse of DImensionality
+        - Dimensionality Reduction
+            - Principal Components Analysis(PCA)
+    - KNN
+    - SVM
+
+- 3.2 Array Processing of OpenCV
+    - 행렬 처리 함수
+    - 채널 분리 및 합성
+    - 컬러 채널 분리
+    - 행렬 산술 연산
+    - 행렬 지수 및 로그 연산
+    - 행렬 크기 및 위상 연산
+    - 행렬 비트 연산
+    - 행렬 절댓값 및 차분 연산
+    - 행렬 최소값 및 최대값 연산
+    - 행렬 합/평균 연산
+    - 행렬곱(내적) 연산
+    - 연립 방정식 풀이
